@@ -1,29 +1,45 @@
 pipeline {
     agent any
 
-    tools {
-        jdk 'JAVA'
-        maven 'MAVEN'
-    }
-
     environment {
-        IMAGE_NAME = "vanshika693/petclinic"
+        DOCKER_IMAGE = "vanshika123/myapp"
+        DOCKER_TAG   = "latest"
     }
 
     stages {
-        stage('Build WAR') {
+
+        stage('Checkout Code') {
             steps {
-                sh 'mvn clean package'
+                checkout scm
             }
         }
 
-stage('Build & Push Docker Image') {
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    docker.build("${DOCKER_IMAGE}:${DOCKER_TAG}")
+                }
+            }
+        }
+
+        stage('Push Docker Image to Docker Hub') {
             steps {
                 script {
                     docker.withRegistry('https://registry.hub.docker.com', 'dockerhub-creds') {
-                        def app = docker.build("vanshika123/myapp:latest")
-                        app.push()
+                        def image = docker.image("${DOCKER_IMAGE}:${DOCKER_TAG}")
+                        image.push()
                     }
                 }
-            }    }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo "✅ Docker image pushed successfully to Docker Hub"
+        }
+        failure {
+            echo "❌ Docker build or push failed"
+        }
+    }
 }
