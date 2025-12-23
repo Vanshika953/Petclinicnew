@@ -1,9 +1,11 @@
-FROM eclipse-temurin:17-jre-jammy
+FROM tomcat:9.0-jdk17-temurin
 
-WORKDIR /app
+# Remove default apps
+RUN rm -rf /usr/local/tomcat/webapps/*
 
-COPY target/*.war app.war
+# Copy WAR as ROOT app
+COPY target/*.war /usr/local/tomcat/webapps/ROOT.war
 
 EXPOSE 8080
 
-ENTRYPOINT ["java","-jar","app.war"]
+CMD ["catalina.sh", "run"]
