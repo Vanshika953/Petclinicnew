@@ -14,7 +14,7 @@ pipeline {
 
         stage('Checkout Code') {
             steps {
-                git 'https://github.com/adityaglobe/Petclinicnew.git'
+                git 'https://github.com/adityaglobe/Petclinicnew'
             }
         }
 
