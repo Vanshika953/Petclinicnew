@@ -7,11 +7,10 @@ pipeline {
     }
 
     environment {
-        IMAGE_NAME = "adityasharmaducat007/petclinic"
+        IMAGE_NAME = "vanshika693/petclinic"
     }
 
     stages {
-
         stage('Build WAR') {
             steps {
                 sh 'mvn clean package'
