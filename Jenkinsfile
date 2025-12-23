@@ -17,18 +17,13 @@ pipeline {
             }
         }
 
-        stage('Docker Build & Push') {
+stage('Build & Push Docker Image') {
             steps {
-                withDockerRegistry(
-                  credentialsId: 'docker-creds',
-                  url: 'https://index.docker.io/v1/'
-                ) {
-                    sh '''
-                    docker build -t $IMAGE_NAME:latest .
-                    docker push $IMAGE_NAME:latest
-                    '''
+                script {
+                    docker.withRegistry('https://registry.hub.docker.com', 'dockerhub-creds') {
+                        def app = docker.build("vanshika123/myapp:latest")
+                        app.push()
+                    }
                 }
-            }
-        }
-    }
+            }    }
 }
